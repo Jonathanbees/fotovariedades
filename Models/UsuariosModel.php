@@ -1,7 +1,7 @@
 <?php
 
 class UsuariosModel extends Query{
-    private $usuario, $nombre, $clave, $id_caja, $id;
+    private $usuario, $nombre, $clave, $id_caja, $id, $estado;
     public function __construct()
     {
         parent::__construct(); //se va a cargar el constructor del archivo de query
@@ -68,10 +68,11 @@ class UsuariosModel extends Query{
         $data = $this->select($sql);
         return $data;
     }
-    public function eliminarUser(int $id){
+    public function accionUser(int $estado, int $id){ //accionUser se encargará de eliminar(poner inactivo al usuario) y reingresarlo (ponerlo activo)
         $this->id = $id;
-        $sql = "UPDATE usuarios SET estado = 0 WHERE id = ?";
-        $datos = array($this->id);
+        $this->estado = $estado;
+        $sql = "UPDATE usuarios SET estado = ? WHERE id = ?";
+        $datos = array($this->estado, $this->id);
         $data = $this->save($sql,$datos);
         return $data;
     }
