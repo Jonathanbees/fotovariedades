@@ -38,27 +38,31 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-gears"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-gears text-primary"></i></div>
                                 Configuracion
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="<?php echo base_url; ?>Usuarios"><i class="fas fa-user me-2"></i> Usuarios</a> 
-                                    <a class="nav-link" href="<?php echo base_url; ?>Cajas"><i class="fas fa-cash-register me-2"></i>Cajas</a>
+                                    <a class="nav-link" href="<?php echo base_url; ?>Usuarios"><i class="fas fa-user me-2 text-primary"></i> Usuarios</a> 
+                                    <a class="nav-link" href="<?php echo base_url; ?>Cajas"><i class="fas fa-cash-register me-2 text-primary"></i>Cajas</a>
                                 </nav >
                             </div>
                             <a class="nav-link collapsed" href="<?php echo base_url; ?>Clientes">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-users text-primary"></i></div>
                                 Clientes
                             </a>
                             <a class="nav-link collapsed" href="<?php echo base_url; ?>Categorias">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-layer-group text-primary"></i></div>
                                 Categorias
                             </a>
                             <a class="nav-link collapsed" href="<?php echo base_url; ?>Medidas">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-scale-balanced text-primary"></i></div>
                                 Medidas
+                            </a>
+                            <a class="nav-link collapsed" href="<?php echo base_url; ?>Productos">
+                                <div class="sb-nav-link-icon"><i class="fab fa-product-hunt text-primary"></i></div>
+                                Productos
                             </a>
 
  

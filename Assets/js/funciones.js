@@ -1,4 +1,4 @@
-let tblUsuarios, tblClientes, tblCategorias, tblMedidas, tblCajas;
+let tblUsuarios, tblClientes, tblCategorias, tblMedidas, tblCajas, tblProductos;
 document.addEventListener("DOMContentLoaded", function() {
     tblUsuarios = $('#tblUsuarios').DataTable({
         ajax: {
@@ -118,41 +118,39 @@ document.addEventListener("DOMContentLoaded", function() {
     ]
     });
     //FIN TABLA CAJAS
-})
-function frmLogin(e) {
-    e.preventDefault();
-    const usuario = document.getElementById("usuario"); //se recibe el elemento usuario
-    const clave = document.getElementById("clave"); //se recibe el elemento clave
-    if (usuario.value == "") {
-        clave.classList.remove("is-invalid");
-        usuario.classList.add("is-invalid");
-        usuario.focus();
-    } else if (clave.value == ""){
-        usuario.classList.remove("is-invalid");
-        clave.classList.add("is-invalid"); //todas estas validaciones anteriores simplemente sirven para poner la casilla del usuario o la contraseña en rojo cuando no se marca algo
-        clave.focus();
-    } else{ 
-        const url = base_url + "Usuarios/validar";
-        const frm = document.getElementById("frmLogin");
-        const http = new XMLHttpRequest();
-        http.open("POST", url, true);
-        http.send(new FormData(frm)); 
-        http.onreadystatechange = function(){ //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
-            if (this.readyState == 4 && this.status == 200){
-                // console.log(this.responseText); en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-               const res = JSON.parse(this.responseText); // se parsea lo que el usuario ponga (que a la vez saca los datos de la base de datos) 
-               //para encontrar lo que se pide, que es la respuesta "ok", esta se ve en el controlador usuario que imprime la respuesta por un json
-               if (res == "ok"){
-                //si todo funciona correctamente, se le concatena el controlador usuarios para mandarlo allá
-                    window.location = base_url + "Usuarios";
-               }else{
-                document.getElementById("alerta").classList.remove("d-none");
-                document.getElementById("alerta").innerHTML = res;
-               }
-            }
+    tblProductos = $('#tblProductos').DataTable({
+        ajax: {
+            url: base_url + "Productos/listar",
+            dataSrc: ''
+        },
+        columns: [{
+            'data' : 'id'
+        },
+        {
+            'data' : 'imagen'
+        }, 
+        {
+            'data' : 'codigo'
+        }, 
+        {
+            'data' : 'descripcion'
+        }, 
+        {
+            'data' : 'precio_venta'
+        },
+        {
+            'data' : 'cantidad'
+        },
+        {
+            'data' : 'estado'
+        },
+        {
+            'data' : 'acciones'
         }
-    }
-}
+    ]
+    });
+})
+
 function frmUsuario() {
     document.getElementById("title").innerHTML = "Nuevo Usuario"; //toma el id del titulo del modal, y lo cambia si se ejecuta esta funcion
     document.getElementById("btnAccion").innerHTML = "Registrar";
@@ -977,4 +975,201 @@ function btnReingresarCajas(idcaja) {
           
         }
       })
+}
+//FIN CAJAS
+function frmProducto() {
+    document.getElementById("title").innerHTML = "Nuevo Producto"; //toma el id del titulo del modal, y lo cambia si se ejecuta esta funcion
+    document.getElementById("btnAccion").innerHTML = "Registrar";
+    document.getElementById("frmProducto").reset();
+    $("#nuevo_producto").modal("show");
+    document.getElementById("id").value = "";
+    deleteImg();
+}
+function registrarPro(e) {
+    e.preventDefault();
+    const codigo = document.getElementById("codigo"); 
+    const nombre = document.getElementById("nombre"); 
+    const precio_compra = document.getElementById("precio_compra"); 
+    const precio_venta = document.getElementById("precio_venta"); 
+    const id_medida = document.getElementById("medida"); 
+    const id_cat = document.getElementById("categoria"); 
+    if (codigo.value == "" || nombre.value == "" || precio_compra.value == "" || precio_venta.value == "") {
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Todos los campos son obligatorios',
+            showConfirmButton: false,
+            timer: 2000
+          })
+    } else{ 
+        const url = base_url + "Productos/registrar"; //controlador/metodo
+        const frm = document.getElementById("frmProducto");
+        const http = new XMLHttpRequest();
+        http.open("POST", url, true);
+        http.send(new FormData(frm)); 
+        http.onreadystatechange = function(){ //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+            if (this.readyState == 4 && this.status == 200){
+                console.log(this.responseText);
+                const res = JSON.parse(this.responseText);
+                console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
+               if (res == "si"){
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Producto registrado con exito',
+                    showConfirmButton: false,
+                    timer: 2000
+                  })
+                  frm.reset();
+                  $("#nuevo_producto").modal("hide");
+                  tblProductos.ajax.reload();
+                
+               } else if(res=="modificado") {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Producto modificado con exito',
+                    showConfirmButton: false,
+                    timer: 2000
+                  })
+                  $("#nuevo_producto").modal("hide");
+                  tblProductos.ajax.reload();
+               }else {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: res,
+                    showConfirmButton: false,
+                    timer: 2000
+                  })
+               }
+            }
+        }
+    }
+}
+function btnEditarPro(id) {
+    document.getElementById("title").innerHTML = "Actualizar Producto"; //toma el id del titulo del modal, y lo cambia si se ejecuta esta funcion
+    document.getElementById("btnAccion").innerHTML = "Modificar";
+    const url = base_url + "Productos/editar/"+id; //controlador/metodo
+    const http = new XMLHttpRequest();
+    http.open("GET", url, true);
+    http.send();
+    http.onreadystatechange = function(){ //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+            if (this.readyState == 4 && this.status == 200){
+                const res = JSON.parse(this.responseText);
+                //console.log(this.responseText); //que está mostrando/respondiendo el servidor
+                
+                document.getElementById("id").value = res.id; 
+                document.getElementById("codigo").value = res.codigo; 
+                document.getElementById("nombre").value = res.descripcion; 
+                document.getElementById("precio_compra").value = res.precio_compra;
+                document.getElementById("precio_venta").value = res.precio_venta;
+                document.getElementById("medida").value = res.id_medida;
+                document.getElementById("categoria").value = res.id_categoria;
+                document.getElementById("img-preview").src = base_url + 'Assets/img/' + res.foto;
+                document.getElementById("icon-cerrar").innerHTML = `<button class="btn btn-danger" onclick="deleteImg()"><i class="fas fa-xmark"></i></button>`;
+                document.getElementById("icon-image").classList.add("d-none");
+                document.getElementById("foto_actual").value = res.foto;
+                document.getElementById("foto_delete").value = res.foto;
+                $("#nuevo_producto").modal("show");
+            }
+        }
+    
+}
+function btnEliminarPro(id) {
+    Swal.fire({
+        title: 'Estás seguro?',
+        text: "Se cambiará el estado del Producto a inactivo",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Eliminar',
+        cancelButtonText:'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            const url = base_url + "Productos/eliminar/"+id; //controlador/metodo
+            const http = new XMLHttpRequest();
+            http.open("GET", url, true);
+            http.send();
+            http.onreadystatechange = function(){ //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+            if (this.readyState == 4 && this.status == 200){
+                const res = JSON.parse(this.responseText);
+                if(res == "ok"){
+                    Swal.fire(
+                        'Eliminado!',
+                        'Producto eliminado',
+                        'success'
+                      )
+                      tblProductos.ajax.reload();
+                } else{
+                    Swal.fire(
+                        'Alerta',
+                        res,
+                        'error'
+                      )
+                }
+            }
+        }
+          
+        }
+      })
+}
+function btnReingresarPro(id) {
+    Swal.fire({
+        title: 'Estás seguro de reingresar?',
+        text: "Se cambiará el estado del producto a: 'activo'",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Reingresar',
+        cancelButtonText:'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            const url = base_url + "Productos/reingresar/"+id; //controlador/metodo
+            const http = new XMLHttpRequest();
+            http.open("GET", url, true);
+            http.send();
+            http.onreadystatechange = function(){ //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+            if (this.readyState == 4 && this.status == 200){
+                const res = JSON.parse(this.responseText);
+                if(res == "ok"){
+                    Swal.fire(
+                        'Reigresado!',
+                        'Producto reingreasado con exito',
+                        'success'
+                      )
+                      tblProductos.ajax.reload();
+                } else{
+                    Swal.fire(
+                        'Alerta',
+                        res,
+                        'error'
+                      )
+                }
+            }
+        }
+          
+        }
+      })
+}
+function preview(e){ //funcion para previsualizar la imagen cuando se selecciona en el registrar
+   // console.log(e.target.files); //esto mostrará los valores de la imagen que se selecciona(tamaño, nombre, tipo, etc.)
+   const url = e.target.files[0];
+   const urlTmp = URL.createObjectURL(url);
+   document.getElementById("img-preview").src = urlTmp;
+   document.getElementById("icon-image").classList.add("d-none");
+   document.getElementById("icon-cerrar").innerHTML = `<button class="btn btn-danger" onclick="deleteImg()"><i class="fas fa-xmark"></i></button>
+   ${url['name']}`;
+}
+function deleteImg(){ //funcion para eliminar la vista previa de la imagen puesta
+    document.getElementById("icon-cerrar").innerHTML = '';
+    document.getElementById("icon-image").classList.remove("d-none");
+    document.getElementById("img-preview").src = '';
+    document.getElementById("imagen").value = '';
+    document.getElementById("foto_delete").value = '';
+    
+    
+    
 }

@@ -65,6 +65,6 @@
         <script>
             const base_url = "<?php echo base_url; ?>";
         </script>
-        <script src="<?php echo base_url;?>Assets/js/funciones.js"></script> <!--cada echo aquí sirve para acceder a estos archivos desde otras partes-->
+        <script src="<?php echo base_url;?>Assets/js/login.js"></script> <!--cada echo aquí sirve para acceder a estos archivos desde otras partes-->
     </body>
 </html>

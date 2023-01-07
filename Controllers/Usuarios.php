@@ -3,13 +3,14 @@ class Usuarios extends Controller{ //usuarios hereda de controller porque contro
     
     public function __construct() {
         session_start(); //para que toda la funcion de validar funcione, hay que poner el constructor que ejecute las funciones
-        if (empty($_SESSION['activo'])){
-            header("location: ".base_url);
-        }
+        
         parent::__construct(); //hay que cargar el constructor del padre para cargar el modelo
     }
     public function index()
     {
+        if (empty($_SESSION['activo'])){
+            header("location: ".base_url);
+        }
         //por defecto se va a ejecutar la funcion index
         $data['cajas'] = $this->model->getCajas();
         $this->views->getView($this,"index", $data);
