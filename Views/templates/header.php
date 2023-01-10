@@ -64,6 +64,10 @@
                                 <div class="sb-nav-link-icon"><i class="fab fa-product-hunt text-primary"></i></div>
                                 Productos
                             </a>
+                            <a class="nav-link collapsed" href="<?php echo base_url; ?>Compras">
+                                <div class="sb-nav-link-icon"><i class="fab fa-product-hunt text-primary"></i></div>
+                                Compras
+                            </a>
 
  
                         </div>
