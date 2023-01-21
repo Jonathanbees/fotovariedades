@@ -43,18 +43,18 @@ class Cajas extends Controller{ //usuarios hereda de controller porque controlle
             if($idcaja == ""){
                     $data = $this->model->registrarCaja($caja);
                     if($data == "ok"){
-                        $msg = "si";
+                        $msg = array('msg'=>'Caja registrada', 'icono' =>'success');
                     } else if ($data == "existe"){
-                        $msg = "El caja ya existe";
+                        $msg = array('msg'=>'La caja ya existe', 'icono' =>'warning');
                     }else {
-                        $msg = "Error al registrar la caja";
+                        $msg = array('msg'=>'Error al registrar la caja', 'icono' =>'error');
                     }
             } else{
                 $data = $this->model->modificarCaja($caja, $idcaja);
                     if($data == "modificado"){
-                        $msg = "modificado";
+                        $msg = array('msg'=>'Caja modificada', 'icono' =>'success');
                     }else {
-                        $msg = "Error al modificar  la caja";
+                        $msg = array('msg'=>'Error al modificar  la caja', 'icono' =>'error');
                     }
             }
         }
@@ -69,9 +69,9 @@ class Cajas extends Controller{ //usuarios hereda de controller porque controlle
     public function eliminar(int $idcaja){
         $data = $this->model->accionCaja(0, $idcaja);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Caja eliminada', 'icono' =>'success');
         }else {
-            $msg = "Error al eliminar la caja";
+            $msg = array('msg'=>'Error al eliminar la caja', 'icono' =>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
@@ -79,9 +79,9 @@ class Cajas extends Controller{ //usuarios hereda de controller porque controlle
     public function reingresar(int $idcaja){
         $data = $this->model->accionCaja(1, $idcaja);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Caja reingresada', 'icono' =>'success');
         }else {
-            $msg = "Error al reingresar la caja";
+            $msg = array('msg'=>'Error al reingresar la caja', 'icono' =>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();

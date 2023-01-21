@@ -147,8 +147,88 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             'data': 'acciones'
         }
+        ],
+        language: {
+            "url": "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json"
+        },
+        dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [{
+                    //Botón para Excel
+                    extend: 'excelHtml5',
+                    footer: true,
+                    title: 'Archivo',
+                    filename: 'Export_File',
+     
+                    //Aquí es donde generas el botón personalizado
+                    text: '<span class="badge badge-success"><i class="fas fa-file-excel"></i></span>'
+                },
+                //Botón para PDF
+                {
+                    extend: 'pdfHtml5',
+                    download: 'open',
+                    footer: true,
+                    title: 'Reporte de usuarios',
+                    filename: 'Reporte de usuarios',
+                    text: '<span class="badge  badge-danger"><i class="fas fa-file-pdf"></i></span>',
+                    exportOptions: {
+                        columns: [0, ':visible']
+                    }
+                },
+                //Botón para copiar
+                {
+                    extend: 'copyHtml5',
+                    footer: true,
+                    title: 'Reporte de usuarios',
+                    filename: 'Reporte de usuarios',
+                    text: '<span class="badge  badge-primary"><i class="fas fa-copy"></i></span>',
+                    exportOptions: {
+                        columns: [0, ':visible']
+                    }
+                },
+                //Botón para print
+                {
+                    extend: 'print',
+                    footer: true,
+                    filename: 'Export_File_print',
+                    text: '<span class="badge badge-light"><i class="fas fa-print"></i></span>'
+                },
+                //Botón para cvs
+                {
+                    extend: 'csvHtml5',
+                    footer: true,
+                    filename: 'Export_File_csv',
+                    text: '<span class="badge  badge-success"><i class="fas fa-file-csv"></i></span>'
+                },
+                {
+                    extend: 'colvis',
+                    text: '<span class="badge  badge-info"><i class="fas fa-columns"></i></span>',
+                    postfixButtons: ['colvisRestore']
+                }
+            ]
+    });
+    //Fin productos
+    $('#t_historial_c').DataTable({
+        ajax: {
+            url: base_url + "Compras/listar_historial",
+            dataSrc: ''
+        },
+        columns: [{
+            'data': 'id'
+        },
+        {
+            'data': 'total'
+        },
+        {
+            'data': 'fecha'
+        },
+        {
+            'data': 'acciones'
+        }
         ]
     });
+    //Fin historial compras
 })
 
 function frmUsuario() {
@@ -159,21 +239,13 @@ function frmUsuario() {
     $("#nuevo_usuario").modal("show");
     document.getElementById("id").value = "";
 }
-function registrarUser(e) {
+function registrarUser(e) { 
     e.preventDefault();
     const usuario = document.getElementById("usuario");
     const nombre = document.getElementById("nombre");
-    const clave = document.getElementById("clave");
-    const confirmar = document.getElementById("confirmar");
     const caja = document.getElementById("caja");
     if (usuario.value == "" || nombre.value == "" || caja.value == "") {
-        Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Todos los campos son obligatorios',
-            showConfirmButton: false,
-            timer: 2000
-        })
+        alertas('Todos los campos son obligatorios', 'warning');
     } else {
         const url = base_url + "Usuarios/registrar"; //controlador/metodo
         const frm = document.getElementById("frmUsuario");
@@ -182,40 +254,11 @@ function registrarUser(e) {
         http.send(new FormData(frm));
         http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
             if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
                 const res = JSON.parse(this.responseText);
-                console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-                if (res == "si") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Usuario registrado con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    frm.reset();
-                    $("#nuevo_usuario").modal("hide");
-                    tblUsuarios.ajax.reload();
-
-                } else if (res == "modificado") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Usuario modificado con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    $("#nuevo_usuario").modal("hide");
-                    tblUsuarios.ajax.reload();
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: res,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
+                //console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
+                $("#nuevo_usuario").modal("hide");
+                alertas(res.msg,res.icono);
+                tblUsuarios.ajax.reload();
             }
         }
     }
@@ -231,13 +274,11 @@ function btnEditarUser(id) {
         if (this.readyState == 4 && this.status == 200) {
             const res = JSON.parse(this.responseText);
             //console.log(this.responseText); //que está mostrando/respondiendo el servidor
-
             document.getElementById("id").value = res.id;
             document.getElementById("usuario").value = res.usuario;
             document.getElementById("nombre").value = res.nombre;
             document.getElementById("caja").value = res.id_caja;
             document.getElementById("claves").classList.add("d-none"); // se ocultan las contraseñas para que el admin no las pueda cambiar
-
             $("#nuevo_usuario").modal("show");
         }
     }
@@ -262,20 +303,8 @@ function btnEliminarUser(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Eliminado!',
-                            'Usuario eliminado',
-                            'success'
-                        )
-                        tblUsuarios.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblUsuarios.ajax.reload();
+                    alertas(res.msg,res.icono);
                 }
             }
 
@@ -301,20 +330,8 @@ function btnReingresarUser(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Reigresado!',
-                            'Usuario reingreasado con exito',
-                            'success'
-                        )
-                        tblUsuarios.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblUsuarios.ajax.reload();
+                    alertas(res.msg,res.icono);
                 }
             }
 
@@ -827,13 +844,7 @@ function registrarCaja(e) {
     e.preventDefault();
     const nombre = document.getElementById("caja");
     if (nombre.value == "") {
-        Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Todos los campos son obligatorios',
-            showConfirmButton: false,
-            timer: 2000
-        })
+        alertas('Todos los campos son obligatorios', 'warning');
     } else {
         const url = base_url + "Cajas/registrar"; //controlador/metodo
         const frm = document.getElementById("frmCajas");
@@ -842,39 +853,12 @@ function registrarCaja(e) {
         http.send(new FormData(frm));
         http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
             if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+                //console.log(this.responseText);
                 const res = JSON.parse(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-                if (res == "si") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Caja registrada con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    frm.reset();
-                    $("#nuevo_caja").modal("hide");
-                    tblCajas.ajax.reload();
-
-                } else if (res == "modificado") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Caja modificada con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    $("#nuevo_caja").modal("hide");
-                    tblCajas.ajax.reload();
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: res,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
+                alertas(res.msg,res.icono);
+                frm.reset();
+                $("#nuevo_caja").modal("hide");
+                tblCajas.ajax.reload();
             }
         }
     }
@@ -890,7 +874,6 @@ function btnEditarCajas(idcaja) {
         if (this.readyState == 4 && this.status == 200) {
             const res = JSON.parse(this.responseText);
             //console.log(this.responseText); //que está mostrando/respondiendo el servidor
-
             document.getElementById("idcaja").value = res.idcaja;
             document.getElementById("caja").value = res.caja;
             $("#nuevo_caja").modal("show");
@@ -917,20 +900,8 @@ function btnEliminarCajas(idcaja) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Eliminada!',
-                            'Caja eliminado',
-                            'success'
-                        )
-                        tblCajas.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblCajas.ajax.reload();
+                    alertas(res.msg,res.icono);
                 }
             }
 
@@ -956,20 +927,8 @@ function btnReingresarCajas(idcaja) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Reigresado!',
-                            'Caja reingreasada con exito',
-                            'success'
-                        )
-                        tblCajas.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblCajas.ajax.reload();
+                    alertas(res.msg,res.icono);
                 }
             }
 
@@ -1169,38 +1128,37 @@ function deleteImg() { //funcion para eliminar la vista previa de la imagen pues
     document.getElementById("imagen").value = '';
     document.getElementById("foto_actual").value = '';
 }
+//FIN PRODUCTOS
 function buscarCodigo(e) {
     e.preventDefault();
-    if (e.which == 13) {
-        const cod = document.getElementById("codigo").value;
-        const url = base_url + "Compras/buscarCodigo/" + cod; //controlador/metodo
-        const http = new XMLHttpRequest();
-        http.open("GET", url, true);
-        http.send();
-        http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
-            if (this.readyState == 4 && this.status == 200) {
-                //console.log(this.responseText);
-                const res = JSON.parse(this.responseText);
-                if (res) {
-                    document.getElementById("nombre").value = res.descripcion;
-                    document.getElementById("precio").value = res.precio_compra;
-                    document.getElementById("id").value = res.id;
-                    document.getElementById("cantidad").focus();
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Producto no encontrado',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    document.getElementById("codigo").value = '';
-                    document.getElementById("codigo").focus();
+    const cod = document.getElementById("codigo").value;
+    if(cod !=  ''){
+        if (e.which == 13) {
+            const url = base_url + "Compras/buscarCodigo/" + cod; //controlador/metodo
+            const http = new XMLHttpRequest();
+            http.open("GET", url, true);
+            http.send();
+            http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+                if (this.readyState == 4 && this.status == 200) {
+                    //console.log(this.responseText);
+                    const res = JSON.parse(this.responseText);
+                    if (res) {
+                        document.getElementById("nombre").value = res.descripcion;
+                        document.getElementById("precio").value = res.precio_compra;
+                        document.getElementById("id").value = res.id;
+                        document.getElementById("cantidad").removeAttribute('disabled');
+                        document.getElementById("cantidad").focus();
+                    } else {
+                        alertas('El producto no existe', 'error');
+                        document.getElementById("codigo").value = '';
+                        document.getElementById("codigo").focus();
+                    }
+    
                 }
-
             }
-        }
+        } 
     }
+
 }
 
 function calcularPrecio(e) {
@@ -1219,21 +1177,19 @@ function calcularPrecio(e) {
                 if (this.readyState == 4 && this.status == 200) {
                     //console.log(this.responseText);
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        alert('Ingresado');
-                        frm.reset();
-                        cargarDetalle();
-                    } else if (res == "modificado") {
-                        alert('producto actualizado');
-                        frm.reset();
-                        cargarDetalle();
-                    }
+                    alertas(res.msg,res.icono);
+                    frm.reset();
+                    cargarDetalle();
+                    document.getElementById('cantidad').setAttribute('disabled','disabled');
+                    document.getElementById('codigo').focus();
                 }
             }
         }
     }
 }
-cargarDetalle();
+if(document.getElementById('tblDetalle')){
+    cargarDetalle();
+}
 function cargarDetalle() {
     const url = base_url + "Compras/listar"; //controlador/metodo
     const http = new XMLHttpRequest();
@@ -1307,15 +1263,19 @@ function generarCompra() {
             http.send();
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
+                    //console.log(this.responseText);
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
+                    if (res.msg == "ok") {
                         Swal.fire(
                             'Listo!',
                             'Compra generada',
                             'success'
                         )
-                        
+                        const ruta = base_url + 'Compras/generarPdf/' + res.id_compra;
+                        window.open(ruta);
+                        setTimeout(()=> {
+                            window.location.reload();
+                        }, 200);
                     } else {
                         Swal.fire(
                             'Alerta',
@@ -1327,6 +1287,38 @@ function generarCompra() {
             }
 
         }
+    })
+}
+//FIN DETALLE-COMPRA
+function modificarEmpresa(){
+    const frm = document.getElementById('frmEmpresa');
+    const url = base_url + "Administracion/modificar/" + id; //controlador/metodo
+    const http = new XMLHttpRequest();
+    http.open("POST", url, true);
+    http.send(new FormData(frm));
+    http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+        if (this.readyState == 4 && this.status == 200) {
+            //console.log(this.responseText);
+            const res = JSON.parse(this.responseText);
+            if(res == "ok"){
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Datos modificados',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+        }
+    }
+}
+function alertas(mensaje, icono){
+    Swal.fire({
+        position: 'center',
+        icon: icono,
+        title: mensaje,
+        showConfirmButton: false,
+        timer: 2000
     })
 }
 

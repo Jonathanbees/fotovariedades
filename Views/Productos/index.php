@@ -3,22 +3,24 @@
     <li class="breadcrumb-item active">Productos</li>
 </ol>
 <button type="button" class="btn btn-primary mb-2" onclick="frmProducto();"><i class="fas fa-plus"></i></button>
-<table class="table table-light table-responsive" id= "tblProductos">
-    <thead class="thead-dark">
-        <tr>
-            <th>Id</th>
-            <th>Imagen</th>
-            <th>Codigo</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Estado</th>
-            <th></th>
-        </tr>
-    </thead>
+<div class="table-responsive">
+    <table class="table table-light table-responsive" id= "tblProductos">
+        <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Imagen</th>
+                <th>Codigo</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
     <tbody>
     </tbody>
-</table>
+    </table>
+</div>
 
 <!-- Modal Body -->
 <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->

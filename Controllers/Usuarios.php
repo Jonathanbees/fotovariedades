@@ -68,27 +68,32 @@ class Usuarios extends Controller{ //usuarios hereda de controller porque contro
         $id = $_POST['id'];
         $hash = hash("SHA256", $clave);
         if (empty($usuario) || empty($nombre) || empty($caja)){
-            $msg = "Todos los campos son obligatorios";
+            $msg = array('msg'=> 'Todos los campos son obligatorios', 'icono'=>'warning'); //este mensaje es para colocarlo en la alerta
         } else {
             if($id == ""){
                 if ($clave != $confirmar){
-                    $msg = "las contraseñas no coinciden";
+                    $msg = array('msg'=> 'Las contraseñas no coinciden', 'icono'=>'warning'); //este mensaje es para colocarlo en la alerta
                 }else{
                     $data = $this->model->registrarUsuario($usuario, $nombre, $hash, $caja);
                     if($data == "ok"){
-                        $msg = "si";
+                        $msg = array('msg'=> 'Usuario registrado exitosamente', 'icono'=>'success'); //este mensaje es para colocarlo en la alerta
+
                     } else if ($data == "existe"){
-                        $msg = "El usuario ya existe";
+                        $msg = array('msg'=> 'El usuario ya existe', 'icono'=>'warning'); //este mensaje es para colocarlo en la alerta
+
                     }else {
-                        $msg = "Error al registrar el usuario";
+                        $msg = array('msg'=> 'Error al modificar el usuario', 'icono'=>'error'); //este mensaje es para colocarlo en la alerta
+
                     }
                 }
             } else{
                 $data = $this->model->modificarUsuario($usuario, $nombre, $caja, $id);
                     if($data == "modificado"){
-                        $msg = "modificado";
+                    $msg = array('msg'=> 'Usuario modificado con éxito', 'icono'=>'success'); //este mensaje es para colocarlo en la alerta
+                        
                     }else {
-                        $msg = "Error al modificar  el usuario";
+                    $msg = array('msg'=> 'Error al modificar el usuario', 'icono'=>'error'); //este mensaje es para colocarlo en la alerta
+                        
                     }
             }
         }
@@ -103,9 +108,10 @@ class Usuarios extends Controller{ //usuarios hereda de controller porque contro
     public function eliminar(int $id){
         $data = $this->model->accionUser(0, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=> 'Usuario eliminado', 'icono'=>'success'); //este mensaje es para colocarlo en la alerta
+
         }else {
-            $msg = "Error al eliminar el usuario";
+            $msg = array('msg'=> 'Error al eliminar el usuario', 'icono'=>'error'); //este mensaje es para colocarlo en la alerta
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
@@ -113,9 +119,9 @@ class Usuarios extends Controller{ //usuarios hereda de controller porque contro
     public function reingresar(int $id){
         $data = $this->model->accionUser(1, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=> 'Usuario reingresado', 'icono'=>'success'); //este mensaje es para colocarlo en la alerta
         }else {
-            $msg = "Error al reingresar el usuario";
+            $msg = array('msg'=> 'Error al reingresar el usuario', 'icono'=>'error'); //este mensaje es para colocarlo en la alerta
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
