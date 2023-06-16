@@ -43,18 +43,18 @@ class Categorias extends Controller{ //usuarios hereda de controller porque cont
             if($id == ""){
                     $data = $this->model->registrarCategorias($nombre);
                     if($data == "ok"){
-                        $msg = "si";
+                        $msg = array('msg'=>'Categoria registrada', 'icono'=>'success');
                     } else if ($data == "existe"){
-                        $msg = "El nombre ya existe";
+                        $msg = array('msg'=>'El nombre ya existe', 'icono'=>'warning');
                     }else {
-                        $msg = "Error al registrar la categoria";
+                        $msg = array('msg'=>'Error al registrar la categoria', 'icono'=>'error');
                     }
             } else{
                 $data = $this->model->modificarCategorias($nombre, $id);
                     if($data == "modificado"){
-                        $msg = "modificado";
+                        $msg = array('msg'=>'Categoria modificada', 'icono'=>'success');
                     }else {
-                        $msg = "Error al modificar  la categoria";
+                        $msg = array('msg'=>'Error al modificar la categoria', 'icono'=>'error');
                     }
             }
         }
@@ -69,9 +69,9 @@ class Categorias extends Controller{ //usuarios hereda de controller porque cont
     public function eliminar(int $id){
         $data = $this->model->accionCategoria(0, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Categoria eliminada', 'icono'=>'success');
         }else {
-            $msg = "Error al eliminar la categoria";
+            $msg = array('msg'=>'Error al eliminar la categoría', 'icono'=>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
@@ -79,9 +79,9 @@ class Categorias extends Controller{ //usuarios hereda de controller porque cont
     public function reingresar(int $id){
         $data = $this->model->accionCategoria(1, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Categoria reingresada', 'icono'=>'success');
         }else {
-            $msg = "Error al reingresar la categoria";
+            $msg = array('msg'=>'Error al eliminar la categoría', 'icono'=>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();

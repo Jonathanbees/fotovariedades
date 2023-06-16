@@ -126,6 +126,34 @@ class Usuarios extends Controller{ //usuarios hereda de controller porque contro
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
     }
+    public function cambiarPass(){
+        $actual = $_POST['clave_actual'];
+        $nueva = $_POST['clave_nueva'];
+        $confirmar = $_POST['confirmar_clave'];
+        if(empty($actual) || empty($nueva) || empty($confirmar)){
+            $mensaje = array('msg' => 'Todos los campos son obligatorios', 'icono'=> 'warning');
+        } else{
+            if ($nueva != $confirmar){
+                $mensaje = array('msg' => 'Las contraseñas no coinciden', 'icono'=> 'warning');
+            }else{
+                $id = $_SESSION['id_usuario'];
+                $hash = hash("SHA256", $actual);
+                $data = $this->model->getPass($hash, $id);
+                if(!empty($data)){
+                    $verificar = $this->model->modificarPass(hash("SHA256", $nueva), $id);
+                    if($verificar == 1){
+                        $mensaje = array('msg' => 'Contraseña modificada con exito', 'icono'=> 'success');
+                    }else{
+                        $mensaje = array('msg' => 'Error al modificar la contraseña', 'icono'=> 'error');
+                    }
+                } else{
+                    $mensaje = array('msg' => 'La contraseña actual es incorrecta', 'icono'=> 'warning');
+                }
+            }
+        }
+        echo json_encode($mensaje, JSON_UNESCAPED_UNICODE);
+        die();
+    }
     public function salir(){
         session_destroy();
         header("location: ".base_url);

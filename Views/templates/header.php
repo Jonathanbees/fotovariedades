@@ -11,13 +11,16 @@
         <link href="<?php echo base_url ?>Assets/css/styles.css" rel="stylesheet" />
         <link href="<?php echo base_url ?>Assets/css/jquery.dataTables.min.css" rel="stylesheet"/>
         <link href="<?php echo base_url ?>Assets/DataTables/dataTables.min.css" rel="stylesheet"/>
+        <link href="<?php echo base_url ?>Assets/css/select2.min.css" rel="stylesheet"/>
         <script src="<?php echo base_url ?>Assets/js/all.js" crossorigin="anonymous"></script>
+
 
     </head>
     <body class="sb-nav-fixed">
+        
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">Fotovariedades</a>
+            <a class="navbar-brand ps-3" href="<?php echo base_url;?>Administracion/home">Fotovariedades</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar-->
@@ -25,7 +28,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Perfil</a></li>
+                        <li><a class="dropdown-item" href="#!" data-bs-toggle="modal" data-bs-target="#cambiarPass">Perfil</a></li>
                         <li><hr class="dropdown-divider" /></li>
                         <li><a class="dropdown-item" href="<?php echo base_url; ?>Usuarios/salir">Cerrar sesión</a></li>
                     </ul>
@@ -74,6 +77,17 @@
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="<?php echo base_url; ?>Compras"><i class="fas fa-shopping-cart me-2 fa-2x text-primary"></i> Nueva compra</a> 
                                     <a class="nav-link" href="<?php echo base_url; ?>Compras/historial"><i class="fas fa-list me-2 fa-2x text-primary"></i>Historial de compras</a>
+                                </nav >
+                            </div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseVenta" aria-expanded="false" aria-controls="collapseVenta">
+                                <div class="sb-nav-link-icon"><i class="fas fa-shopping-cart fa-2x text-primary"></i></div>
+                                Salidas
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseVenta" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="<?php echo base_url; ?>Compras/ventas"><i class="fas fa-shopping-cart me-2 fa-2x text-primary"></i> Nueva venta</a> 
+                                    <a class="nav-link" href="<?php echo base_url; ?>Compras/historial_ventas"><i class="fas fa-list me-2 fa-2x text-primary"></i>Historial de ventas</a>
                                 </nav >
                             </div>
 

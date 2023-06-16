@@ -1,5 +1,6 @@
-let tblUsuarios, tblClientes, tblCategorias, tblMedidas, tblCajas, tblProductos;
+let tblUsuarios, tblClientes, tblCategorias, tblMedidas, tblCajas, tblProductos, t_h_c, t_h_v;
 document.addEventListener("DOMContentLoaded", function () {
+    $('#cliente').select2();
     tblUsuarios = $('#tblUsuarios').DataTable({
         ajax: {
             url: base_url + "Usuarios/listar",
@@ -152,64 +153,64 @@ document.addEventListener("DOMContentLoaded", function () {
             "url": "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json"
         },
         dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
-                "<'row'<'col-sm-12'tr>>" +
-                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-                buttons: [{
-                    //Botón para Excel
-                    extend: 'excelHtml5',
-                    footer: true,
-                    title: 'Archivo',
-                    filename: 'Export_File',
-     
-                    //Aquí es donde generas el botón personalizado
-                    text: '<span class="badge badge-success"><i class="fas fa-file-excel"></i></span>'
-                },
-                //Botón para PDF
-                {
-                    extend: 'pdfHtml5',
-                    download: 'open',
-                    footer: true,
-                    title: 'Reporte de usuarios',
-                    filename: 'Reporte de usuarios',
-                    text: '<span class="badge  badge-danger"><i class="fas fa-file-pdf"></i></span>',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    }
-                },
-                //Botón para copiar
-                {
-                    extend: 'copyHtml5',
-                    footer: true,
-                    title: 'Reporte de usuarios',
-                    filename: 'Reporte de usuarios',
-                    text: '<span class="badge  badge-primary"><i class="fas fa-copy"></i></span>',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    }
-                },
-                //Botón para print
-                {
-                    extend: 'print',
-                    footer: true,
-                    filename: 'Export_File_print',
-                    text: '<span class="badge badge-light"><i class="fas fa-print"></i></span>'
-                },
-                //Botón para cvs
-                {
-                    extend: 'csvHtml5',
-                    footer: true,
-                    filename: 'Export_File_csv',
-                    text: '<span class="badge  badge-success"><i class="fas fa-file-csv"></i></span>'
-                },
-                {
-                    extend: 'colvis',
-                    text: '<span class="badge  badge-info"><i class="fas fa-columns"></i></span>',
-                    postfixButtons: ['colvisRestore']
-                }
-            ]
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [{
+            //Botón para Excel
+            extend: 'excelHtml5',
+            footer: true,
+            title: 'Archivo',
+            filename: 'Export_File',
+
+            //Aquí es donde generas el botón personalizado
+            text: '<span class="badge badge-success"><i class="fas fa-file-excel"></i></span>'
+        },
+        //Botón para PDF
+        {
+            extend: 'pdfHtml5',
+            download: 'open',
+            footer: true,
+            title: 'Reporte de usuarios',
+            filename: 'Reporte de usuarios',
+            text: '<span class="badge  badge-danger"><i class="fas fa-file-pdf"></i></span>',
+            exportOptions: {
+                columns: [0, ':visible']
+            }
+        },
+        //Botón para copiar
+        {
+            extend: 'copyHtml5',
+            footer: true,
+            title: 'Reporte de usuarios',
+            filename: 'Reporte de usuarios',
+            text: '<span class="badge  badge-primary"><i class="fas fa-copy"></i></span>',
+            exportOptions: {
+                columns: [0, ':visible']
+            }
+        },
+        //Botón para print
+        {
+            extend: 'print',
+            footer: true,
+            filename: 'Export_File_print',
+            text: '<span class="badge badge-light"><i class="fas fa-print"></i></span>'
+        },
+        //Botón para cvs
+        {
+            extend: 'csvHtml5',
+            footer: true,
+            filename: 'Export_File_csv',
+            text: '<span class="badge  badge-success"><i class="fas fa-file-csv"></i></span>'
+        },
+        {
+            extend: 'colvis',
+            text: '<span class="badge  badge-info"><i class="fas fa-columns"></i></span>',
+            postfixButtons: ['colvisRestore']
+        }
+        ]
     });
     //Fin productos
-    $('#t_historial_c').DataTable({
+    t_h_c = $('#t_historial_c').DataTable({ 
         ajax: {
             url: base_url + "Compras/listar_historial",
             dataSrc: ''
@@ -224,12 +225,70 @@ document.addEventListener("DOMContentLoaded", function () {
             'data': 'fecha'
         },
         {
+            'data': 'estado'
+        },
+        {
             'data': 'acciones'
         }
         ]
     });
     //Fin historial compras
+    t_h_v = $('#t_historial_v').DataTable({
+        ajax: {
+            url: base_url + "Compras/listar_historial_venta",
+            dataSrc: ''
+        },
+        columns: [{
+            'data': 'id'
+        },
+        {
+            'data': 'nombre'
+        },
+        {
+            'data': 'total'
+        },
+        {
+            'data': 'fecha'
+        },
+        {
+            'data': 'estado'
+        },
+        {
+            'data': 'acciones'
+        }
+        ]
+    });
+    //fin historial ventas
 })
+function frmCambiarPass(e) {
+    e.preventDefault;
+    const actual = document.getElementById('clave_actual').value;
+    const nueva = document.getElementById('clave_nueva').value;
+    const confirmar = document.getElementById('confirmar_clave').value;
+    if (actual == '' || nueva == '' || confirmar == '') {
+        alertas('Todos los campos son obligatorios', 'warning');
+    } else {
+        if (nueva != confirmar) {
+            alertas('Las contraseñas no coinciden', 'warning');
+        } else {
+            const url = base_url + "Usuarios/cambiarPass"; //controlador/metodo
+            const frm = document.getElementById("frmCambiarPass");
+            const http = new XMLHttpRequest();
+            http.open("POST", url, true);
+            http.send(new FormData(frm));
+            http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+                if (this.readyState == 4 && this.status == 200) {
+                    const res = JSON.parse(this.responseText);
+                    //console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
+                    alertas(res.msg, res.icono);
+                    $("#cambiarPass").modal("hide");
+                    frm.reset();
+                }
+            }
+        }
+    }
+}
+
 
 function frmUsuario() {
     document.getElementById("title").innerHTML = "Nuevo Usuario"; //toma el id del titulo del modal, y lo cambia si se ejecuta esta funcion
@@ -239,7 +298,7 @@ function frmUsuario() {
     $("#nuevo_usuario").modal("show");
     document.getElementById("id").value = "";
 }
-function registrarUser(e) { 
+function registrarUser(e) {
     e.preventDefault();
     const usuario = document.getElementById("usuario");
     const nombre = document.getElementById("nombre");
@@ -257,7 +316,7 @@ function registrarUser(e) {
                 const res = JSON.parse(this.responseText);
                 //console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
                 $("#nuevo_usuario").modal("hide");
-                alertas(res.msg,res.icono);
+                alertas(res.msg, res.icono);
                 tblUsuarios.ajax.reload();
             }
         }
@@ -304,7 +363,7 @@ function btnEliminarUser(id) {
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
                     tblUsuarios.ajax.reload();
-                    alertas(res.msg,res.icono);
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -331,7 +390,7 @@ function btnReingresarUser(id) {
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
                     tblUsuarios.ajax.reload();
-                    alertas(res.msg,res.icono);
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -354,13 +413,7 @@ function registrarCli(e) {
     const telefono = document.getElementById("telefono");
     const direccion = document.getElementById("direccion");
     if (identificacion.value == "" || nombre.value == "" || telefono.value == "" || direccion.value == "") {
-        Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Todos los campos son obligatorios',
-            showConfirmButton: false,
-            timer: 2000
-        })
+        alertas('Todos los campos son obligatorios', 'warning');
     } else {
         const url = base_url + "Clientes/registrar"; //controlador/metodo
         const frm = document.getElementById("frmCliente");
@@ -369,40 +422,12 @@ function registrarCli(e) {
         http.send(new FormData(frm));
         http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
             if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
                 const res = JSON.parse(this.responseText);
-                console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-                if (res == "si") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Cliente registrado con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    frm.reset();
-                    $("#nuevo_cliente").modal("hide");
-                    tblClientes.ajax.reload();
-
-                } else if (res == "modificado") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Cliente modificado con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    $("#nuevo_cliente").modal("hide");
-                    tblClientes.ajax.reload();
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: res,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
+                //console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
+                alertas(res.msg, res.icono);
+                frm.reset();
+                $("#nuevo_cliente").modal("hide");
+                tblClientes.ajax.reload();
             }
         }
     }
@@ -448,20 +473,8 @@ function btnEliminarCli(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Eliminado!',
-                            'Cliente eliminado',
-                            'success'
-                        )
-                        tblClientes.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblClientes.ajax.reload();
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -487,23 +500,10 @@ function btnReingresarCli(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Reigresado!',
-                            'Cliente reingreasado con exito',
-                            'success'
-                        )
-                        tblClientes.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblClientes.ajax.reload();
+                    alertas(res.msg, res.icono);
                 }
             }
-
         }
     })
 }
@@ -519,13 +519,7 @@ function registrarCategorias(e) {
     e.preventDefault();
     const nombre = document.getElementById("nombre");
     if (nombre.value == "") {
-        Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Todos los campos son obligatorios',
-            showConfirmButton: false,
-            timer: 2000
-        })
+        alertas('Todos los campos son obligatorios', 'warning');
     } else {
         const url = base_url + "Categorias/registrar"; //controlador/metodo
         const frm = document.getElementById("frmCategorias");
@@ -536,38 +530,11 @@ function registrarCategorias(e) {
             if (this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
                 const res = JSON.parse(this.responseText);
-                console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-                if (res == "si") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Categoria registrada con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    frm.reset();
-                    $("#nuevo_categoria").modal("hide");
-                    tblCategorias.ajax.reload();
-
-                } else if (res == "modificado") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Categoria modificada con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    $("#nuevo_categoria").modal("hide");
-                    tblCategorias.ajax.reload();
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: res,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
+                //console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
+                alertas(res.msg, res.icono);
+                frm.reset();
+                $("#nuevo_categoria").modal("hide");
+                tblCategorias.ajax.reload();
             }
         }
     }
@@ -610,20 +577,8 @@ function btnEliminarCategorias(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Eliminada!',
-                            'Categoria eliminado',
-                            'success'
-                        )
-                        tblCategorias.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblCategorias.ajax.reload();
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -649,20 +604,8 @@ function btnReingresarCategorias(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Reigresado!',
-                            'Categoria reingreasada con exito',
-                            'success'
-                        )
-                        tblCategorias.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblCategorias.ajax.reload();
+                    alertas(res.msg, res.icono)
                 }
             }
 
@@ -699,37 +642,10 @@ function registrarMedidas(e) {
             if (this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
                 const res = JSON.parse(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-                if (res == "si") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Medida registrada con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    frm.reset();
-                    $("#nuevo_medida").modal("hide");
-                    tblMedidas.ajax.reload();
-
-                } else if (res == "modificado") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Medida modificada con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    $("#nuevo_medida").modal("hide");
-                    tblMedidas.ajax.reload();
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: res,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
+                alertas(res.msg, res.icono);
+                frm.reset();
+                $("#nuevo_medida").modal("hide");
+                tblMedidas.ajax.reload();
             }
         }
     }
@@ -773,20 +689,8 @@ function btnEliminarMedidas(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Eliminada!',
-                            'Medida eliminada',
-                            'success'
-                        )
-                        tblMedidas.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblMedidas.ajax.reload();
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -812,20 +716,8 @@ function btnReingresarMedidas(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Reigresada!',
-                            'Medida reingreasada con exito',
-                            'success'
-                        )
-                        tblMedidas.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblMedidas.ajax.reload();
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -855,7 +747,7 @@ function registrarCaja(e) {
             if (this.readyState == 4 && this.status == 200) {
                 //console.log(this.responseText);
                 const res = JSON.parse(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-                alertas(res.msg,res.icono);
+                alertas(res.msg, res.icono);
                 frm.reset();
                 $("#nuevo_caja").modal("hide");
                 tblCajas.ajax.reload();
@@ -901,7 +793,7 @@ function btnEliminarCajas(idcaja) {
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
                     tblCajas.ajax.reload();
-                    alertas(res.msg,res.icono);
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -928,7 +820,7 @@ function btnReingresarCajas(idcaja) {
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
                     tblCajas.ajax.reload();
-                    alertas(res.msg,res.icono);
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -953,13 +845,7 @@ function registrarPro(e) {
     const id_medida = document.getElementById("medida");
     const id_cat = document.getElementById("categoria");
     if (codigo.value == "" || nombre.value == "" || precio_compra.value == "" || precio_venta.value == "") {
-        Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Todos los campos son obligatorios',
-            showConfirmButton: false,
-            timer: 2000
-        })
+        alertas('Todos los campos son obligatorios', 'warning');
     } else {
         const url = base_url + "Productos/registrar"; //controlador/metodo
         const frm = document.getElementById("frmProducto");
@@ -968,40 +854,13 @@ function registrarPro(e) {
         http.send(new FormData(frm));
         http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
             if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+                //console.log(this.responseText);
                 const res = JSON.parse(this.responseText);
-                console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
-                if (res == "si") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Producto registrado con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    frm.reset();
-                    $("#nuevo_producto").modal("hide");
-                    tblProductos.ajax.reload();
-
-                } else if (res == "modificado") {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Producto modificado con exito',
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    $("#nuevo_producto").modal("hide");
-                    tblProductos.ajax.reload();
-                } else {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: res,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
+                //console.log(this.responseText); //en esta línea se imprime en un arreglo que se muestra por consola, los datos que el usuario haya ingresado
+                alertas(res.msg, res.icono);
+                frm.reset();
+                $("#nuevo_producto").modal("hide");
+                tblProductos.ajax.reload();
             }
         }
     }
@@ -1053,20 +912,8 @@ function btnEliminarPro(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Eliminado!',
-                            'Producto eliminado',
-                            'success'
-                        )
-                        tblProductos.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblProductos.ajax.reload();
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -1092,20 +939,8 @@ function btnReingresarPro(id) {
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
                     const res = JSON.parse(this.responseText);
-                    if (res == "ok") {
-                        Swal.fire(
-                            'Reigresado!',
-                            'Producto reingreasado con exito',
-                            'success'
-                        )
-                        tblProductos.ajax.reload();
-                    } else {
-                        Swal.fire(
-                            'Alerta',
-                            res,
-                            'error'
-                        )
-                    }
+                    tblProductos.ajax.reload();
+                    alertas(res.msg, res.icono);
                 }
             }
 
@@ -1132,7 +967,7 @@ function deleteImg() { //funcion para eliminar la vista previa de la imagen pues
 function buscarCodigo(e) {
     e.preventDefault();
     const cod = document.getElementById("codigo").value;
-    if(cod !=  ''){
+    if (cod != '') {
         if (e.which == 13) {
             const url = base_url + "Compras/buscarCodigo/" + cod; //controlador/metodo
             const http = new XMLHttpRequest();
@@ -1153,10 +988,41 @@ function buscarCodigo(e) {
                         document.getElementById("codigo").value = '';
                         document.getElementById("codigo").focus();
                     }
-    
+
                 }
             }
-        } 
+        }
+    }
+
+}
+function buscarCodigoVenta(e) {
+    e.preventDefault();
+    const cod = document.getElementById("codigo").value;
+    if (cod != '') {
+        if (e.which == 13) {
+            const url = base_url + "Compras/buscarCodigo/" + cod; //controlador/metodo
+            const http = new XMLHttpRequest();
+            http.open("GET", url, true);
+            http.send();
+            http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+                if (this.readyState == 4 && this.status == 200) {
+                    //console.log(this.responseText);
+                    const res = JSON.parse(this.responseText);
+                    if (res) {
+                        document.getElementById("nombre").value = res.descripcion;
+                        document.getElementById("precio").value = res.precio_venta;
+                        document.getElementById("id").value = res.id;
+                        document.getElementById("cantidad").removeAttribute('disabled');
+                        document.getElementById("cantidad").focus();
+                    } else {
+                        alertas('El producto no existe', 'error');
+                        document.getElementById("codigo").value = '';
+                        document.getElementById("codigo").focus();
+                    }
+
+                }
+            }
+        }
     }
 
 }
@@ -1177,21 +1043,50 @@ function calcularPrecio(e) {
                 if (this.readyState == 4 && this.status == 200) {
                     //console.log(this.responseText);
                     const res = JSON.parse(this.responseText);
-                    alertas(res.msg,res.icono);
+                    alertas(res.msg, res.icono);
                     frm.reset();
                     cargarDetalle();
-                    document.getElementById('cantidad').setAttribute('disabled','disabled');
+                    document.getElementById('cantidad').setAttribute('disabled', 'disabled');
                     document.getElementById('codigo').focus();
                 }
             }
         }
     }
 }
-if(document.getElementById('tblDetalle')){
+function calcularPrecioVenta(e) {
+    e.preventDefault();
+    const cant = document.getElementById("cantidad").value;
+    const precio = document.getElementById("precio").value;
+    document.getElementById("subtotal").value = precio * cant; //calcular la cantidad en base al precio del producto que se tenga en la base de datos
+    if (e.which == 13) { //esta validación significa que si sí se ha presionado la tecla enter que envía la info
+        if (cant > 0) {
+            const url = base_url + "Compras/ingresarVenta"; //controlador/metodo
+            const frm = document.getElementById("frmVenta");
+            const http = new XMLHttpRequest();
+            http.open("POST", url, true);
+            http.send(new FormData(frm));
+            http.onreadystatechange = function () {//si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+                if (this.readyState == 4 && this.status == 200) {
+                    //console.log(this.responseText);
+                    const res = JSON.parse(this.responseText);
+                    alertas(res.msg, res.icono);
+                    frm.reset();
+                    cargarDetalleVenta();
+                    document.getElementById('cantidad').setAttribute('disabled', 'disabled');
+                    document.getElementById('codigo').focus();
+                }
+            }
+        }
+    }
+}
+if (document.getElementById('tblDetalle')) {
     cargarDetalle();
 }
+if (document.getElementById('tblDetalleVenta')) {
+    cargarDetalleVenta();
+}
 function cargarDetalle() {
-    const url = base_url + "Compras/listar"; //controlador/metodo
+    const url = base_url + "Compras/listar/detalle"; //controlador/metodo
     const http = new XMLHttpRequest();
     http.open("GET", url, true);
     http.send();
@@ -1208,7 +1103,7 @@ function cargarDetalle() {
                     <td>${row['precio']}</td>
                     <td>${row['sub_total']}</td>
                     <td>
-                        <button class="btn btn-danger" type="button" onclick="deleteDetalle(${row['id']})"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-danger" type="button" onclick="deleteDetalle(${row['id']}, 1)"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>`
             });
@@ -1217,8 +1112,41 @@ function cargarDetalle() {
         }
     }
 }
-function deleteDetalle(id) {
-    const url = base_url + "Compras/delete/" + id; //controlador/metodo
+function cargarDetalleVenta() {
+    const url = base_url + "Compras/listar/detalle_temp"; //controlador/metodo
+    const http = new XMLHttpRequest();
+    http.open("GET", url, true);
+    http.send();
+    http.onreadystatechange = function () {//si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+        if (this.readyState == 4 && this.status == 200) {
+            //console.log(this.responseText);
+            const res = JSON.parse(this.responseText);
+            let html = '';
+            res.detalle.forEach(row => {
+                html += `<tr>
+                    <td>${row['id']}</td>
+                    <td>${row['descripcion']}</td>
+                    <td>${row['cantidad']}</td>
+                    <td>${row['precio']}</td>
+                    <td>${row['sub_total']}</td>
+                    <td>
+                        <button class="btn btn-danger" type="button" onclick="deleteDetalle(${row['id']}, 2)"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`
+            });
+            document.getElementById("tblDetalleVenta").innerHTML = html;
+            document.getElementById("total").value = res.total_pagar.total;
+        }
+    }
+}
+function deleteDetalle(id, accion) {
+    //if accion == 1, será una compra, si es 2, será una venta
+    let url;
+    if (accion == 1) {
+        url = base_url + "Compras/delete/" + id; //controlador/metodo
+    } else {
+        url = base_url + "Compras/deleteVenta/" + id; //controlador/metodo
+    }
     const http = new XMLHttpRequest();
     http.open("GET", url, true);
     http.send();
@@ -1233,7 +1161,12 @@ function deleteDetalle(id) {
                     showConfirmButton: false,
                     timer: 2000
                 })
-                cargarDetalle();
+                if (accion == 1) {
+                    cargarDetalle();
+                } else {
+                    cargarDetalleVenta();
+                }
+
             } else {
                 Swal.fire({
                     position: 'center',
@@ -1246,7 +1179,8 @@ function deleteDetalle(id) {
         }
     }
 }
-function generarCompra() {
+function procesar(accion) {
+
     Swal.fire({
         title: 'Estás seguro de realizar la compra?',
         icon: 'warning',
@@ -1257,13 +1191,19 @@ function generarCompra() {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            const url = base_url + "Compras/registrarCompra/" + id; //controlador/metodo
+            let url;
+            if (accion == 1) {
+                url = base_url + "Compras/registrarCompra/" + id; //controlador/metodo
+            } else {
+                const id_cliente = document.getElementById('cliente').value;
+                url = base_url + "Compras/registrarVenta/" + id_cliente; //controlador/metodo
+            }
             const http = new XMLHttpRequest();
             http.open("GET", url, true);
             http.send();
             http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
                 if (this.readyState == 4 && this.status == 200) {
-                    //console.log(this.responseText);
+                    console.log(this.responseText);
                     const res = JSON.parse(this.responseText);
                     if (res.msg == "ok") {
                         Swal.fire(
@@ -1271,9 +1211,15 @@ function generarCompra() {
                             'Compra generada',
                             'success'
                         )
-                        const ruta = base_url + 'Compras/generarPdf/' + res.id_compra;
+                        let ruta;
+                        if (accion == 1) {
+                            ruta = base_url + 'Compras/generarPdf/' + res.id_compra;
+                        } else {
+                            ruta = base_url + 'Compras/generarPdfVenta/' + res.id_venta;
+                        }
+
                         window.open(ruta);
-                        setTimeout(()=> {
+                        setTimeout(() => {
                             window.location.reload();
                         }, 200);
                     } else {
@@ -1289,8 +1235,9 @@ function generarCompra() {
         }
     })
 }
+
 //FIN DETALLE-COMPRA
-function modificarEmpresa(){
+function modificarEmpresa() {
     const frm = document.getElementById('frmEmpresa');
     const url = base_url + "Administracion/modificar/" + id; //controlador/metodo
     const http = new XMLHttpRequest();
@@ -1300,7 +1247,7 @@ function modificarEmpresa(){
         if (this.readyState == 4 && this.status == 200) {
             //console.log(this.responseText);
             const res = JSON.parse(this.responseText);
-            if(res == "ok"){
+            if (res == "ok") {
                 Swal.fire({
                     position: 'center',
                     icon: 'success',
@@ -1312,7 +1259,7 @@ function modificarEmpresa(){
         }
     }
 }
-function alertas(mensaje, icono){
+function alertas(mensaje, icono) {
     Swal.fire({
         position: 'center',
         icon: icono,
@@ -1321,4 +1268,151 @@ function alertas(mensaje, icono){
         timer: 2000
     })
 }
+reporteStock();
+productosVendidos();
+function reporteStock() {
+    const url = base_url + "Administracion/reporteStock"; //controlador/metodo
+    const http = new XMLHttpRequest();
+    http.open("POST", url, true);
+    http.send();
+    http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+        if (this.readyState == 4 && this.status == 200) {
+            //console.log(this.responseText);
+            const res = JSON.parse(this.responseText);
+            let nombre = [];
+            let cantidad = [];
+            for (let i = 0; i < res.length; i++) {
+                nombre.push(res[i]['descripcion']);
+                cantidad.push(res[i]['cantidad']);
+
+            }
+            var ctx = document.getElementById("stockMinimo");
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: nombre,
+                    datasets: [{
+                        data: cantidad,
+                        backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745', '#7F12C6', '#FC6E27', '#59D8B3', '#899A9C', '#C21385'],
+                    }],
+                },
+            });
+
+        }
+    }
+} //reporte para mostrar los productos que tienen menos stock
+function productosVendidos() {
+    const url = base_url + "Administracion/productosVendidos"; //controlador/metodo
+    const http = new XMLHttpRequest();
+    http.open("POST", url, true);
+    http.send();
+    http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            const res = JSON.parse(this.responseText);
+            let nombre = [];
+            let cantidad = [];
+            for (let i = 0; i < res.length; i++) {
+                nombre.push(res[i]['descripcion']);
+                cantidad.push(res[i]['total']);
+
+            }
+
+            var ctx = document.getElementById("ProductosVendidos");
+            var myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: nombre,
+                    datasets: [{
+                        data: cantidad,
+                        backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745', '#7F12C6', '#FC6E27', '#59D8B3', '#899A9C', '#C21385'],
+                    }],
+                },
+            });
+
+        }
+    }
+} //reporte para mostrar los 10 productos que más se han vendido
+function btnAnularC(id) {
+    Swal.fire({
+        title: 'Estás seguro de anular la compra?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar' 
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const url = base_url + "Compras/anularCompra/" + id; //controlador/metodo
+            const http = new XMLHttpRequest();
+            http.open("GET", url, true);
+            http.send();
+            http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+                if (this.readyState == 4 && this.status == 200) {
+                    //console.log(this.responseText);
+                    const res = JSON.parse(this.responseText);
+                    alertas(res.msg,res.icono);
+                    t_h_c.ajax.reload();
+                    /*if (res.msg == "ok") {
+                        Swal.fire(
+                            'Listo!',
+                            'Compra generada',
+                            'success'
+                        )
+                    } else {
+                        Swal.fire(
+                            'Alerta',
+                            res,
+                            'error'
+                        )
+                    }*/
+                }
+            }
+
+        }
+    })
+}
+function btnAnularV(id) {
+    Swal.fire({
+        title: 'Estás seguro de anular la venta?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar' 
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const url = base_url + "Compras/anularVenta/" + id; //controlador/metodo
+            const http = new XMLHttpRequest();
+            http.open("GET", url, true);
+            http.send();
+            http.onreadystatechange = function () { //si el readystate es igual a 4 y el status es igual a 200, la respuesta está lista, y se puede ejecutar
+                if (this.readyState == 4 && this.status == 200) {
+                    //console.log(this.responseText);
+                    const res = JSON.parse(this.responseText);
+                    alertas(res.msg,res.icono);
+                    t_h_v.ajax.reload();
+                    /*if (res.msg == "ok") {
+                        Swal.fire(
+                            'Listo!',
+                            'Compra generada',
+                            'success'
+                        )
+                    } else {
+                        Swal.fire(
+                            'Alerta',
+                            res,
+                            'error'
+                        )
+                    }*/
+                }
+            }
+
+        }
+    })
+}
+
+
 

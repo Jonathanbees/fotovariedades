@@ -23,7 +23,7 @@ function frmLogin(e) {
                //para encontrar lo que se pide, que es la respuesta "ok", esta se ve en el controlador usuario que imprime la respuesta por un json
                if (res == "ok"){
                 //si todo funciona correctamente, se le concatena el controlador usuarios para mandarlo allá
-                    window.location = base_url + "Usuarios";
+                    window.location = base_url + "Administracion/home";
                }else{
                 document.getElementById("alerta").classList.remove("d-none");
                 document.getElementById("alerta").innerHTML = res;

@@ -68,12 +68,12 @@ class Productos extends Controller{ //Productos hereda de controller porque cont
                         if(!empty($name)){
                             move_uploaded_file($tmpname,$destino);
                         }
-                        $msg = "si";
+                        $msg = array('msg'=>'Producto registrado con éxito','icono'=>'success');
                         
                     } else if ($data == "existe"){
-                        $msg = "El Producto ya existe";
+                        $msg = array('msg'=>'El producto ya existe','icono'=>'warning');
                     }else {
-                        $msg = "Error al registrar el Producto";
+                        $msg = array('msg'=>'Error al registrar el producto','icono'=>'error');
                     }
             } else{     
                 $imgDelete = $this->model->editarPro($id);
@@ -87,9 +87,9 @@ class Productos extends Controller{ //Productos hereda de controller porque cont
                         if(!empty($name)){
                             move_uploaded_file($tmpname,$destino);
                         }
-                        $msg = "modificado";
+                        $msg = array('msg'=>'Producto modificado con éxito','icono'=>'success');
                     }else {
-                        $msg = "Error al modificar  el Producto";
+                        $msg = array('msg'=>'Error al modificar el producto','icono'=>'error');
                     }
             }
         }
@@ -104,9 +104,9 @@ class Productos extends Controller{ //Productos hereda de controller porque cont
     public function eliminar(int $id){
         $data = $this->model->accionPro(0, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Producto eliminado con éxito','icono'=>'success');
         }else {
-            $msg = "Error al eliminar el Producto";
+            $msg = array('msg'=>'Error al eliminar el producto','icono'=>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
@@ -114,9 +114,9 @@ class Productos extends Controller{ //Productos hereda de controller porque cont
     public function reingresar(int $id){
         $data = $this->model->accionPro(1, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Producto reingresado con éxito','icono'=>'success');
         }else {
-            $msg = "Error al reingresar el Producto";
+            $msg = array('msg'=>'Error al reingresar el producto','icono'=>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();

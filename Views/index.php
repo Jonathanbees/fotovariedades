@@ -36,7 +36,7 @@
                                         </form>
                                     </div>
                                     <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="register.html">No tiene una cuenta? registrese</a></div>
+                                        <div class="small"></div>
                                     </div>
                                 </div>
                             </div>

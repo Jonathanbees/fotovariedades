@@ -1,16 +1,16 @@
 <?php include "Views/templates/header.php"; ?>
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h4>Nueva compra</h4>
+        <h4>Nueva venta</h4>
     </div>
     <div class="card-body">
-        <form id="frmCompra">
+        <form id="frmVenta">
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="codigo"><i class="fas fa-barcode"></i>Codigo de barras</label>
                         <input type="hidden" id="id" name="id">
-                        <input type="text" name="codigo" id="codigo" class="form-control" placeholder="Codigo de barras" onkeyup="buscarCodigo(event)">
+                        <input type="text" name="codigo" id="codigo" class="form-control" placeholder="Codigo de barras" onkeyup="buscarCodigoVenta(event)">
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -22,13 +22,13 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <label for="cantidad">Cantidad</label>
-                        <input type="number" name="cantidad" id="cantidad" class="form-control" onkeyup="calcularPrecio(event)" disabled>
+                        <input type="number" name="cantidad" id="cantidad" class="form-control" onkeyup="calcularPrecioVenta(event)" disabled>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
                         <label for="precio">Precio</label>
-                        <input type="text" name="precio" id="precio" class="form-control" placeholder="Precio de compra" disabled>
+                        <input type="text" name="precio" id="precio" class="form-control" placeholder="Precio de venta" disabled>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -53,15 +53,26 @@
             <th></th>
         </tr>
     </thead>
-    <tbody id="tblDetalle">
+    <tbody id="tblDetalleVenta">
     </tbody>
 </table>
 <div class="row">
-    <div class="col-md-4  ms-auto ">
+    <div class= "col-md-4">
+        <div class="form-group">
+          <label for="cliente">Seleccionar cliente</label>
+          <select class="form-control" name="cliente" id="cliente">
+            <?php foreach ($data as $row){ ?>
+                <option value = "<?php echo $row['id']; ?>"><?php echo $row['nombre']; ?></option>
+            <?php } ?> 
+          </select>
+        </div>      
+    </div>
+    
+    <div class="col-md-3 ms-auto">
         <div class="form-group">
             <label for="total"><b>Total</b></label>
             <input type="text" name="total" id="total" class="form-control" placeholder="Total" disabled>
-            <button type="button" class="btn btn-primary mt-2 btn-block" onclick="procesar(1)">Generar compra</button>
+            <button type="button" class="btn btn-primary mt-2 btn-block" onclick="procesar(2)">Generar venta</button>
         </div>
         
     </div>

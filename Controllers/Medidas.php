@@ -44,18 +44,18 @@ class Medidas extends Controller{ //usuarios hereda de controller porque control
             if($id == ""){
                     $data = $this->model->registrarMedidas($nombre, $corto);
                     if($data == "ok"){
-                        $msg = "si";
+                        $msg = array('msg'=>'Medida registrada exitosamente', 'icono'=>'success');
                     } else if ($data == "existe"){
-                        $msg = "El nombre ya existe";
+                        $msg = array('msg'=>'La medida ya existe', 'icono'=>'warning');
                     }else {
-                        $msg = "Error al registrar la medida";
+                        $msg = array('msg'=>'Error al registrar la medida', 'icono'=>'error');
                     }
             } else{
                 $data = $this->model->modificarMedidas($nombre, $corto, $id);
                     if($data == "modificado"){
-                        $msg = "modificado";
+                        $msg = array('msg'=>'Medida modificada exitosamente', 'icono'=>'success');
                     }else {
-                        $msg = "Error al modificar  la medida";
+                        $msg = array('msg'=>'Error al modificar la medida', 'icono'=>'error');
                     }
             }
         }
@@ -70,9 +70,9 @@ class Medidas extends Controller{ //usuarios hereda de controller porque control
     public function eliminar(int $id){
         $data = $this->model->accionMedida(0, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Medida eliminada exitosamente', 'icono'=>'success');
         }else {
-            $msg = "Error al eliminar la medida";
+            $msg = array('msg'=>'Error al eliminar la medida', 'icono'=>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
@@ -80,9 +80,9 @@ class Medidas extends Controller{ //usuarios hereda de controller porque control
     public function reingresar(int $id){
         $data = $this->model->accionMedida(1, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Medida reingresada exitosamente', 'icono'=>'success');
         }else {
-            $msg = "Error al reingresar la medida";
+            $msg = array('msg'=>'Error al reingresar la medida', 'icono'=>'error');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();

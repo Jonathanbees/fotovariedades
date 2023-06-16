@@ -46,18 +46,18 @@ class Clientes extends Controller{ //usuarios hereda de controller porque contro
             if($id == ""){
                     $data = $this->model->registrarCliente($identificacion, $nombre,$telefono,$direccion);
                     if($data == "ok"){
-                        $msg = "si";
+                        $msg = array('msg'=> 'Cliente registrado exitosamente', 'icono'=>'success');
                     } else if ($data == "existe"){
-                        $msg = "La identificacion ya existe";
+                        $msg = array('msg' => 'La identificacion ya existe', 'icono' => 'warning');
                     }else {
-                        $msg = "Error al registrar el cliente";
+                        $msg = array('msg' => 'Error al registrar el cliente', 'icono' => 'error');
                     }
             } else{
                 $data = $this->model->modificarCliente($identificacion, $nombre, $telefono,$direccion, $id);
                     if($data == "modificado"){
-                        $msg = "modificado";
+                        $msg = array('msg'=>'Cliente modificado', 'icono'=>'success');
                     }else {
-                        $msg = "Error al modificar  el cliente";
+                        $msg = array('msg'=>'Error al modificar  el cliente', 'icono'=>'error');
                     }
             }
         }
@@ -72,9 +72,9 @@ class Clientes extends Controller{ //usuarios hereda de controller porque contro
     public function eliminar(int $id){
         $data = $this->model->accionCli(0, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Cliente eliminado', 'icono'=>'success');
         }else {
-            $msg = "Error al eliminar el cliente";
+            $msg = array('msg'=>'Error al eliminar el cliente', 'icono'=>'danger');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();
@@ -82,9 +82,9 @@ class Clientes extends Controller{ //usuarios hereda de controller porque contro
     public function reingresar(int $id){
         $data = $this->model->accionCli(1, $id);
         if($data == 1){
-            $msg = "ok";
+            $msg = array('msg'=>'Cliente reingresado', 'icono'=>'success');
         }else {
-            $msg = "Error al reingresar el cliente";
+            $msg = array('msg'=>'Error al reingresar el cliente', 'icono'=>'danger');
         }
         echo json_encode($msg, JSON_UNESCAPED_UNICODE);
         die();

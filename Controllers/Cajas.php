@@ -1,6 +1,6 @@
 <?php
 class Cajas extends Controller{ //usuarios hereda de controller porque controller ya carga todos los Model, por lo tanto, se puede acceder a todos los métodos de los modelos desde controller
-    
+    //Accede a la clase controller que a su vez permite cargar el modelo referente al controlador
     public function __construct() {
         session_start(); //para que toda la funcion de validar funcione, hay que poner el constructor que ejecute las funciones
         if (empty($_SESSION['activo'])){

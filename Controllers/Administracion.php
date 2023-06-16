@@ -14,7 +14,16 @@ class Administracion extends Controller{
         //por defecto se va a ejecutar la funcion index
         $this->views->getView($this,"index", $data);
     }
+    public function home()
+    {
+        $data['usuarios'] = $this->model->getDatos('usuarios');
+        $data['clientes'] = $this->model->getDatos('clientes');
+        $data['productos'] = $this->model->getDatos('productos');
+        //por defecto se va a ejecutar la funcion index
+        $this->views->getView($this,"home", $data);
+    }
     public function modificar(){
+        //se va a guardar los valores del formulario en variables locales para posteriormente dirigirlas al modelo
         $rut = $_POST['rut'];
         $nombre = $_POST['nombre'];
         $tel = $_POST['telefono'];
@@ -28,6 +37,16 @@ class Administracion extends Controller{
             $msg = "Error";
         }
         echo json_encode($msg);
+        die();
+    }
+    public function reporteStock(){
+        $data = $this->model->getStockMinimo();
+        echo json_encode($data);
+        die();
+    }
+    public function productosVendidos(){
+        $data = $this->model->getproductosVendidos();
+        echo json_encode($data);
         die();
     }
 }
